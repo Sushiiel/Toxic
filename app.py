@@ -11,7 +11,7 @@ import time
 def get_form_text(form_url):
     try:
         # Path to your local ChromeDriver
-        driver_path = "C:/Users/Aravind Jayakumar/Downloads/chromedriver-win64/chromedriver-win64/chromedriver.exe"
+        driver_path = "chromedriver.exe"
         service = Service(driver_path)
         options = Options()
         options.add_argument("--headless")  # Run in headless mode (no visible window)
