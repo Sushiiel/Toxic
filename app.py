@@ -11,7 +11,7 @@ import time
 def get_form_text(form_url):
     try:
         # Path to your local ChromeDriver
-        driver_path = "https://github.com/Sushiiel/Toxic/blob/main/chromedriver.exe"
+        driver_path = "https://github.com/Sushiiel/Toxic/releases/tag/v1.0"
         service = Service(driver_path)
         options = Options()
         options.add_argument("--headless")  # Run in headless mode (no visible window)
