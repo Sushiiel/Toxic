@@ -7,12 +7,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import google.generativeai as genai
 import time
+from webdriver_manager.chrome import ChromeDriverManager
 
 def get_form_text(form_url):
     try:
         # Path to your local ChromeDriver
         driver_path = "https://github.com/Sushiiel/Toxic/releases/tag/v1.0"
-        service = Service(driver_path)
+        service = Service(ChromeDriverManager().install())
         options = Options()
         options.add_argument("--headless")  # Run in headless mode (no visible window)
         options.add_argument("--disable-gpu")
