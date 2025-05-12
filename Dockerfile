@@ -8,15 +8,22 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Google Chrome
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -P /tmp
-RUN dpkg -i /tmp/google-chrome-stable_current_amd64.deb || apt-get -fy install
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -P /tmp \
+    && dpkg -i /tmp/google-chrome-stable_current_amd64.deb || apt-get -fy install \
+    && rm -f /tmp/google-chrome-stable_current_amd64.deb
+
+# Verify Chrome installation and extract version
+RUN google-chrome --version
 
 # Install ChromeDriver dynamically based on Chrome version
-RUN CHROME_VERSION=$(google-chrome --version | grep -oP '\\d+\\.\\d+\\.\\d+') && \
+RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f1-3) && \
+    echo "Google Chrome Version: $CHROME_VERSION" && \
     DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION") && \
+    echo "ChromeDriver Version: $DRIVER_VERSION" && \
     wget -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip" -P /tmp && \
     unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
-    chmod +x /usr/local/bin/chromedriver
+    chmod +x /usr/local/bin/chromedriver && \
+    rm -f /tmp/chromedriver.zip
 
 # Set display port to avoid crash (for headless Chrome)
 ENV DISPLAY=:99
