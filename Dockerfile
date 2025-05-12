@@ -32,6 +32,7 @@ RUN apt-get update && apt-get install -y \
     fonts-liberation \
     xdg-utils \
     lsb-release \
+    libgbm1 \
     && apt-get clean
 
 # Download and install Google Chrome stable
