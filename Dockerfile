@@ -58,3 +58,10 @@ WORKDIR /app
 
 # Start a shell to interact with the container
 CMD [ "bash" ]
+
+COPY . /app
+WORKDIR /app
+
+EXPOSE 8000
+CMD ["streamlit", "run", "app.py", "--server.port=8000", "--server.address=0.0.0.0"]
+
