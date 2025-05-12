@@ -21,14 +21,12 @@ RUN apt-get update && apt-get install -y \
     libatk-bridge2.0-0 \
     libatk1.0-0 \
     libcups2 \
-    libgdk-pixbuf2.0-0 \
     libx11-6 \
     libxshmfence1 \
     libasound2 \
     libnspr4 \
     libxdamage1 \
     libappindicator3-1 \
-    libindicator3-0 \
     libdbusmenu-glib4 \
     libdbusmenu-gtk3-4 \
     fonts-liberation \
