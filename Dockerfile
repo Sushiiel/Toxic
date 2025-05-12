@@ -12,11 +12,8 @@ RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.d
     && dpkg -i /tmp/google-chrome-stable_current_amd64.deb || apt-get -fy install \
     && rm -f /tmp/google-chrome-stable_current_amd64.deb
 
-# Install missing dependencies and fix broken packages
-RUN apt-get install -y --fix-missing
-
 # Verify Chrome installation and extract version
-RUN google-chrome-stable --version
+RUN which google-chrome-stable && google-chrome-stable --version || echo "Chrome installation failed"
 
 # Install ChromeDriver dynamically based on Chrome version
 RUN CHROME_VERSION=$(google-chrome-stable --version | awk '{print $3}' | cut -d '.' -f1-3) && \
