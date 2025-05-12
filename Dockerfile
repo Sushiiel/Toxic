@@ -7,16 +7,19 @@ RUN apt-get update && apt-get install -y \
     xdg-utils fonts-liberation libatk-bridge2.0-0 libgtk-3-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Google Chrome
+# Install Google Chrome and ensure it installs properly
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -P /tmp \
     && dpkg -i /tmp/google-chrome-stable_current_amd64.deb || apt-get -fy install \
     && rm -f /tmp/google-chrome-stable_current_amd64.deb
 
+# Install missing dependencies and fix broken packages
+RUN apt-get install -y --fix-missing
+
 # Verify Chrome installation and extract version
-RUN google-chrome --version
+RUN google-chrome-stable --version
 
 # Install ChromeDriver dynamically based on Chrome version
-RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f1-3) && \
+RUN CHROME_VERSION=$(google-chrome-stable --version | awk '{print $3}' | cut -d '.' -f1-3) && \
     echo "Google Chrome Version: $CHROME_VERSION" && \
     DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION") && \
     echo "ChromeDriver Version: $DRIVER_VERSION" && \
