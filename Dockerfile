@@ -47,11 +47,11 @@ RUN wget https://chromedriver.storage.googleapis.com/113.0.5672.63/chromedriver_
     && chmod +x /usr/local/bin/chromedriver \
     && rm -f /tmp/chromedriver_linux64.zip
 
+# Remove any existing symbolic link for google-chrome and create a new one
+RUN rm -f /usr/bin/google-chrome && ln -s /usr/bin/google-chrome-stable /usr/bin/google-chrome
+
 # Verify Chrome and ChromeDriver installation
 RUN google-chrome-stable --version && chromedriver --version
-
-# Set Chrome as the default browser (optional)
-RUN ln -s /usr/bin/google-chrome-stable /usr/bin/google-chrome
 
 # Set the working directory (optional)
 WORKDIR /app
