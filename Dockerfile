@@ -7,19 +7,16 @@ RUN apt-get update && apt-get install -y \
     xdg-utils fonts-liberation libatk-bridge2.0-0 libgtk-3-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Google Chrome and ensure it installs properly
+# Install Google Chrome stable version
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -P /tmp \
     && dpkg -i /tmp/google-chrome-stable_current_amd64.deb || apt-get -fy install \
     && rm -f /tmp/google-chrome-stable_current_amd64.deb
 
-# Verify Chrome installation and extract version
+# Ensure Chrome is installed and verify the version
 RUN which google-chrome-stable && google-chrome-stable --version || echo "Chrome installation failed"
 
-# Install ChromeDriver dynamically based on Chrome version
-RUN CHROME_VERSION=$(google-chrome-stable --version | awk '{print $3}' | cut -d '.' -f1-3) && \
-    echo "Google Chrome Version: $CHROME_VERSION" && \
-    DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION") && \
-    echo "ChromeDriver Version: $DRIVER_VERSION" && \
+# Install ChromeDriver manually for a specific version of Chrome (e.g., 136.0.7103.92)
+RUN DRIVER_VERSION="136.0.7103" && \
     wget -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip" -P /tmp && \
     unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
     chmod +x /usr/local/bin/chromedriver && \
