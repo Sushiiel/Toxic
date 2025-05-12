@@ -11,13 +11,18 @@ RUN apt-get update && apt-get install -y \
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -P /tmp
 RUN dpkg -i /tmp/google-chrome-stable_current_amd64.deb || apt-get -fy install
 
-# Install ChromeDriver (hardcoded version for stability)
-RUN wget https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip -P /tmp
-RUN unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
-RUN chmod +x /usr/local/bin/chromedriver
+# Install ChromeDriver dynamically based on Chrome version
+RUN CHROME_VERSION=$(google-chrome --version | grep -oP '\\d+\\.\\d+\\.\\d+') && \
+    DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION") && \
+    wget -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip" -P /tmp && \
+    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
+    chmod +x /usr/local/bin/chromedriver
 
-# Set display port to avoid crash
+# Set display port to avoid crash (for headless Chrome)
 ENV DISPLAY=:99
+
+# Install XVFB for headless browser support
+RUN apt-get install -y xvfb
 
 # Set working directory
 WORKDIR /app
