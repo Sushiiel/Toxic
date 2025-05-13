@@ -14,11 +14,15 @@ mkdir -p /tmp/chromedriver
 wget https://storage.googleapis.com/chrome-for-testing-public/136.0.7103.92/linux64/chromedriver-linux64.zip -P /tmp
 unzip /tmp/chromedriver-linux64.zip -d /tmp/chromedriver
 
+# Check the contents of /tmp/chromedriver directory to ensure chromedriver is extracted
+echo "Contents of /tmp/chromedriver:"
+ls -l /tmp/chromedriver
+
 # Set executable permission for the chromedriver binary
-chmod +x /tmp/chromedriver/chromedriver-linux64/chromedriver
+chmod +x /tmp/chromedriver/chromedriver
 
 # Move the actual executable to the location your Python code expects
-mv /tmp/chromedriver/chromedriver-linux64/chromedriver /tmp/chromedriver/chromedriver
+mv /tmp/chromedriver/chromedriver /tmp/chromedriver/chromedriver
 
 # (Optional) Output path for debug
 echo "✅ Chromedriver is ready at: /tmp/chromedriver/chromedriver"
