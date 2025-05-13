@@ -18,13 +18,13 @@ wget https://storage.googleapis.com/chrome-for-testing-public/136.0.7103.92/linu
 unzip /tmp/chromedriver-linux64.zip -d /tmp/chromedriver
 
 # Set the proper permissions for chromedriver
-chmod +x /tmp/chromedriver/chromedriver
+chmod +x /tmp/chromedriver/chromedriver-linux64/chromedriver
 
 # Optionally, output the extracted file path for debugging
-echo "Chromedriver extracted to: /tmp/chromedriver/chromedriver"
+echo "Chromedriver extracted to: /tmp/chromedriver/chromedriver-linux64/chromedriver"
 
 # Check if the ChromeDriver file exists and is executable
-if [ -x /tmp/chromedriver/chromedriver ]; then
+if [ -x /tmp/chromedriver/chromedriver-linux64/chromedriver ]; then
     echo "Chromedriver is ready for use."
 else
     echo "❌ Error: Chromedriver is not executable or not found."
