@@ -10,21 +10,27 @@ import os
 
 def get_form_text(form_url):
     try:
-        # Use the new path where chromedriver is extracted
+        # Path to chromedriver in Render
         driver_path = "/tmp/chromedriver/chromedriver"
         
+        # Debugging: Check if chromedriver exists at the given path
+        if not os.path.exists(driver_path):
+            return f"❌ Chromedriver not found at {driver_path}. Please ensure it is installed and located at this path."
+        
+        print(f"Chromedriver found at {driver_path}")  # Log for debugging
+
         service = Service(driver_path)  # Point to the extracted chromedriver
         options = Options()
         options.add_argument("--headless")  # Run in headless mode (no visible window)
         options.add_argument("--disable-gpu")
-        
+
         driver = webdriver.Chrome(service=service, options=options)
 
         # Load the Google Form
         driver.get(form_url)
 
         # Wait for the form to load and extract elements
-        wait = WebDriverWait(driver, 10)
+        wait = WebDriverWait(driver, 20)
         elements = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".o3Dpx")))
         elements_text = [element.text for element in elements]
 
@@ -32,8 +38,7 @@ def get_form_text(form_url):
         return elements_text
 
     except Exception as e:
-        return f"Error loading form: {e}"
-
+        return f"❌ Error loading form: {str(e)}"
 def get_gemini_response(input_text):
     try:
         genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
