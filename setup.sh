@@ -17,5 +17,7 @@ unzip /tmp/chromedriver-linux64.zip -d /tmp/chromedriver
 # Set the proper permissions for chromedriver
 chmod +x /tmp/chromedriver/chromedriver
 
-# Create a symlink to /usr/local/bin for easier access
-ln -s /tmp/chromedriver/chromedriver /usr/local/bin/chromedriver
+# Optionally, output the extracted file path for debugging
+echo "Chromedriver extracted to: /tmp/chromedriver/chromedriver"
+
+# No need to create a symlink if we set the chromedriver path in the application
