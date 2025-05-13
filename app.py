@@ -10,20 +10,33 @@ chromedriver_autoinstaller.install()
 
 def get_form_text(form_url):
     try:
-        # Set Chrome options for headless browsing
-        options = Options()
-        options.add_argument("--headless")  # Run in headless mode (no visible window)
-        options.add_argument("--disable-gpu")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
+        # Path to the installed Chrome and ChromeDriver
+        chrome_path = "/usr/bin/google-chrome-stable"  # Path to Chrome
+        chromedriver_path = "/usr/local/bin/chromedriver"  # Path to ChromeDriver
+        
+        # Check if Chrome and ChromeDriver exist at the expected paths
+        if not os.path.exists(chrome_path):
+            return f"❌ Chrome not found at {chrome_path}. Please ensure Chrome is installed correctly."
+        if not os.path.exists(chromedriver_path):
+            return f"❌ ChromeDriver not found at {chromedriver_path}. Please ensure ChromeDriver is installed correctly."
 
-        # Initialize the WebDriver
-        driver = webdriver.Chrome(options=options)
+        print(f"Chrome found at {chrome_path}")  # Log for debugging
+        print(f"Chromedriver found at {chromedriver_path}")  # Log for debugging
+
+        # Set up Chrome options
+        options = Options()
+        options.add_argument("--headless")  # Run in headless mode
+        options.add_argument("--disable-gpu")
+        options.binary_location = chrome_path  # Set the binary location for Chrome
+
+        # Set up the WebDriver with custom chromedriver path
+        service = Service(chromedriver_path)
+        driver = webdriver.Chrome(service=service, options=options)
 
         # Load the Google Form
         driver.get(form_url)
 
-        # Wait for the form to load and extract elements
+        # Wait for the form to load and extract elements (example selector, adjust as needed)
         elements = driver.find_elements_by_css_selector(".o3Dpx")
         elements_text = [element.text for element in elements]
 
