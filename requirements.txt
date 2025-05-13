@@ -2,3 +2,4 @@ streamlit
 selenium
 google-generativeai
 webdriver-manager
+chromedriver-autoinstaller
