@@ -1,37 +1,30 @@
 import streamlit as st
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import google.generativeai as genai
 import os
+import chromedriver_autoinstaller
+
+# Automatically install the correct chromedriver version for the current Chrome version
+chromedriver_autoinstaller.install()
 
 def get_form_text(form_url):
     try:
-        # Path to chromedriver in Render
-        driver_path = "/opt/chromedriver/chromedriver"
-        
-        # Debugging: Check if chromedriver exists at the given path
-        if not os.path.exists(driver_path):
-            return f"❌ Chromedriver not found at {driver_path}. Please ensure it is installed and located at this path."
-        
-        print(f"Chromedriver found at {driver_path}")  # Log for debugging
-
-        service = Service(driver_path)  # Point to the extracted chromedriver
+        # Set Chrome options for headless browsing
         options = Options()
         options.add_argument("--headless")  # Run in headless mode (no visible window)
         options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
 
-        driver = webdriver.Chrome(service=service, options=options)
+        # Initialize the WebDriver
+        driver = webdriver.Chrome(options=options)
 
         # Load the Google Form
         driver.get(form_url)
 
         # Wait for the form to load and extract elements
-        wait = WebDriverWait(driver, 20)
-        elements = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".o3Dpx")))
+        elements = driver.find_elements_by_css_selector(".o3Dpx")
         elements_text = [element.text for element in elements]
 
         driver.quit()
@@ -39,6 +32,7 @@ def get_form_text(form_url):
 
     except Exception as e:
         return f"❌ Error loading form: {str(e)}"
+
 def get_gemini_response(input_text):
     try:
         genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
