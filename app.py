@@ -7,22 +7,26 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import google.generativeai as genai
 import time
+import os
 from webdriver_manager.chrome import ChromeDriverManager
 
 def get_form_text(form_url):
     try:
-        # Path to your local ChromeDriver
-        driver_path = "https://github.com/Sushiiel/Toxic/releases/tag/v1.0"
-        service = Service(ChromeDriverManager().install())
+        # Configure Chrome options for Render
         options = Options()
-        options.add_argument("--headless")  # Run in headless mode (no visible window)
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
+
+        # Set up the Chrome driver
+        service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=options)
 
         # Load the Google Form
         driver.get(form_url)
 
-        # Wait for the form to load and extract elements
+        # Wait for the form to load and extract text
         wait = WebDriverWait(driver, 10)
         elements = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".o3Dpx")))
         elements_text = [element.text for element in elements]
@@ -31,17 +35,18 @@ def get_form_text(form_url):
         return elements_text
 
     except Exception as e:
-        return f"Error loading form: {e}"
+        return f"❌ Error loading form: {str(e)}"
 
 def get_gemini_response(input_text):
-    genai_client = genai.Client(api_key="AIzaSyAfO8S5sipCLNhMgt70HtpFDrpuI7nanfw")
-    response = genai_client.models.generate_content(
-        model="gemini-2.0-flash",
-        contents=input_text
-    )
-    return response.text
+    try:
+        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))  # Use env variable
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        response = model.generate_content(input_text)
+        return response.text
+    except Exception as e:
+        return f"❌ Gemini API error: {str(e)}"
 
-# Streamlit App
+# Streamlit App UI
 st.set_page_config(page_title="Google Form AI Assistant", layout="centered")
 st.title("📄 Google Form Analyzer with Gemini AI")
 
@@ -52,11 +57,10 @@ if st.button("Analyze Form"):
         with st.spinner("Loading and analyzing form..."):
             form_content = get_form_text(form_url)
 
-            if isinstance(form_content, str):
-                st.error(form_content)  # Display error if form_content is an error message
+            if isinstance(form_content, str) and form_content.startswith("❌"):
+                st.error(form_content)
             else:
                 gemini_output = get_gemini_response(form_content)
-
                 st.subheader("✅ Extracted Form Text:")
                 st.write(form_content)
 
