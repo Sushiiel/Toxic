@@ -39,7 +39,7 @@ def get_form_text(form_url):
 
 def get_gemini_response(input_text):
     try:
-        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))  # Use env variable
+        genai.configure(api_key=os.getenv("AIzaSyAfO8S5sipCLNhMgt70HtpFDrpuI7nanfw"))  # Use env variable
         model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(input_text)
         return response.text
